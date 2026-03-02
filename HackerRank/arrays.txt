@@ -1,0 +1,15 @@
+import numpy
+
+def arrays(arr):
+    n=numpy.array(list(reversed(arr)),float)
+    return n
+
+arr = input().strip().split(' ')
+result = arrays(arr)
+print(result)
+
+
+Title:Arrays
+Approach: Reverse the input list using reversed(), convert it into a NumPy array of type float, and return the array.
+
+Time & Space Complexity: Time complexity is O(n) and space complexity is O(n), where n is the number of elements.

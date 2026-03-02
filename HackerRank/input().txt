@@ -1,0 +1,11 @@
+x,y = map(int,input().split())
+P = list(input().split('+'))
+val = 0
+for i in P:
+    val += eval(i)
+print(val == y)
+
+Title:Input()
+Approach: Split the polynomial expression at "+", evaluate each term using eval(), sum them, and compare the result with the given value y.
+
+Time & Space Complexity: Time complexity is O(n) where n is the number of terms, and space complexity is O(n) for storing the split terms.

@@ -1,0 +1,22 @@
+import re
+
+t = int(input())
+
+for _ in range(t):
+    pattern = input().strip()
+    
+    try:
+        # Check for multiple repeat operators manually
+        if re.search(r'[\*\+\?]{2,}', pattern):
+            print("False")
+        else:
+            re.compile(pattern)
+            print("True")
+            
+    except:
+        print("False")
+
+
+Approach: For each test case, first check for consecutive quantifiers (like *+, ++) using a regex search, then validate the pattern using re.compile() inside a try-except block.
+
+Time & Space Complexity: Time complexity is O(t × n) and space complexity is O(n), where n is the length of the regex string.

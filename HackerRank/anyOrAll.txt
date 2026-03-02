@@ -1,0 +1,9 @@
+n = int(input())
+arr = list(map(str, input().split()))
+print(all(int(x) > 0 for x in arr) and any(x == x[::-1] for x in arr))
+
+
+Title:Any or All
+Approach: Check if all numbers are positive using all(int(x) > 0) and verify if at least one number is a palindrome using any(x == x[::-1]), then print the combined boolean result.
+
+Time & Space Complexity: Time complexity is O(n × k) (where n is number of elements and k is length of each string) and space complexity is O(n).

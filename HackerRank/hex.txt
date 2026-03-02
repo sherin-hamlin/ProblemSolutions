@@ -1,0 +1,19 @@
+# Enter your code here. Read input from STDIN. Print output to STDOUT
+import re
+
+pattern = r"(?<=[\:\, ])+[#]+([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})"
+
+for _ in range(int(input())):
+    line = input()
+    res = re.findall(pattern, line)
+    
+    if res:
+        [print("#"+i) for i in res]
+    else:
+        pass
+
+
+Title:Hex colour code
+Approach: Use a regular expression with lookbehind to match valid 3 or 6 digit hexadecimal color codes preceded by :, ,, or space, extract them using re.findall(), and print each match.
+
+Time & Space Complexity: Time complexity is O(n × m) (where n is number of lines and m is length of each line), and space complexity is O(k) for storing matched results.

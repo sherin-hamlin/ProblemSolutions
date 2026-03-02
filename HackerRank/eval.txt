@@ -1,0 +1,9 @@
+ar=input("") 
+result=eval(var)
+
+Title :Eval
+Approach
+Take the input expression as a string and use eval() to evaluate it dynamically.
+
+Time & Space Complexity
+Time complexity is O(n) and space complexity is O(n), where n is the length of the input string.

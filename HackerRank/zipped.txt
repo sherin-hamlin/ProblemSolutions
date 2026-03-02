@@ -1,0 +1,12 @@
+N, X = map(int, input().split())
+marks_list = []
+for _ in range(X):
+    marks_list += [list(map(float, input().split()))]
+
+for marks in zip(*marks_list):
+    print(f"{sum(marks)/X:.1f}")
+
+Title: zipped
+Approach: Store marks of each subject in a list, use zip(*marks_list) to group marks student-wise, then compute and print each student’s average.
+
+Time & Space Complexity: Time complexity is O(N × X) and space complexity is O(N × X).
