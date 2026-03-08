@@ -1,0 +1,65 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     struct TreeNode *left;
+ *     struct TreeNode *right;
+ * };
+ */
+
+/*
+APPROACH:
+Inorder Traversal follows the order:
+    LEFT -> ROOT -> RIGHT
+
+1. Traverse the left subtree.
+2. Visit the root node and store its value in the result array.
+3. Traverse the right subtree.
+
+We use a helper recursive function to perform the traversal
+and store values in an array.
+*/
+
+void inorder(struct TreeNode* root, int* result, int* index)
+{
+    // Base case: if node is NULL return
+    if(root == NULL)
+        return;
+
+    // Step 1: Traverse left subtree
+    inorder(root->left, result, index);
+
+    // Step 2: Visit current node
+    result[*index] = root->val;
+    (*index)++;
+
+    // Step 3: Traverse right subtree
+    inorder(root->right, result, index);
+}
+
+int* inorderTraversal(struct TreeNode* root, int* returnSize)
+{
+    // Allocate memory for result array (max nodes = 100)
+    int* result = (int*)malloc(100 * sizeof(int));
+
+    // Initialize return size
+    *returnSize = 0;
+
+    // Perform inorder traversal
+    inorder(root, result, returnSize);
+
+    // Return the result array
+    return result;
+}
+
+/*
+TIME COMPLEXITY:
+O(n)
+Each node in the tree is visited exactly once.
+
+SPACE COMPLEXITY:
+O(h)
+Where h is the height of the tree due to recursion stack.
+Worst case (skewed tree) = O(n)
+Best case (balanced tree) = O(log n)
+*/
