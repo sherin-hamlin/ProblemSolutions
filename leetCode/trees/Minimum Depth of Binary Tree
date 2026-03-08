@@ -1,0 +1,53 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     struct TreeNode *left;
+ *     struct TreeNode *right;
+ * };
+ */
+
+int minDepth(struct TreeNode* root) {
+
+    /*
+    APPROACH:
+    1. If the node is NULL -> depth = 0
+    2. If node is a leaf node -> depth = 1
+    3. Recursively find minimum depth of left and right subtree
+    4. If one subtree is NULL, take the depth of the other subtree
+    */
+
+    // Base case
+    if(root == NULL)
+        return 0;
+
+    // Leaf node
+    if(root->left == NULL && root->right == NULL)
+        return 1;
+
+    // If left subtree is NULL
+    if(root->left == NULL)
+        return 1 + minDepth(root->right);
+
+    // If right subtree is NULL
+    if(root->right == NULL)
+        return 1 + minDepth(root->left);
+
+    // If both subtrees exist
+    int left = minDepth(root->left);
+    int right = minDepth(root->right);
+
+    return 1 + (left < right ? left : right);
+}
+
+/*
+TIME COMPLEXITY:
+O(n)
+Every node is visited once.
+
+SPACE COMPLEXITY:
+O(h)
+Recursion stack where h is the height of the tree.
+Worst case = O(n)
+Balanced tree = O(log n)
+*/
