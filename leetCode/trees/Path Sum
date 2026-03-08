@@ -1,0 +1,46 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     struct TreeNode *left;
+ *     struct TreeNode *right;
+ * };
+ */
+
+bool hasPathSum(struct TreeNode* root, int targetSum) {
+
+    /*
+    APPROACH:
+    1. If tree is empty -> no path exists.
+    2. Subtract current node value from targetSum.
+    3. If node is a leaf node, check if remaining sum equals node value.
+    4. Recursively check left and right subtree.
+    */
+
+    // Empty tree
+    if(root == NULL)
+        return false;
+
+    // Check leaf node
+    if(root->left == NULL && root->right == NULL)
+        return (targetSum == root->val);
+
+    // Remaining sum after subtracting current node
+    int remaining = targetSum - root->val;
+
+    // Check left or right subtree
+    return hasPathSum(root->left, remaining) ||
+           hasPathSum(root->right, remaining);
+}
+
+/*
+TIME COMPLEXITY:
+O(n)
+Each node is visited once.
+
+SPACE COMPLEXITY:
+O(h)
+Recursion stack where h = height of tree.
+Worst case (skewed tree) = O(n)
+Balanced tree = O(log n)
+*/
