@@ -1,0 +1,41 @@
+
+bool isSameTree(struct TreeNode* p, struct TreeNode* q) {
+
+    /*
+    APPROACH:
+    Compare both trees using recursion.
+
+    1. If both nodes are NULL -> trees are identical at this point.
+    2. If one node is NULL and the other is not -> trees are different.
+    3. If node values are different -> trees are different.
+    4. Recursively compare left subtrees and right subtrees.
+    */
+
+    // both nodes are NULL
+    if(p == NULL && q == NULL)
+        return true;
+
+    // one node is NULL
+    if(p == NULL || q == NULL)
+        return false;
+
+    // values must match
+    if(p->val != q->val)
+        return false;
+
+    // check left and right subtree
+    return isSameTree(p->left, q->left) &&
+           isSameTree(p->right, q->right);
+}
+
+/*
+TIME COMPLEXITY:
+O(n)
+We visit each node once while comparing both trees.
+
+SPACE COMPLEXITY:
+O(h)
+Recursion stack where h is the height of the tree.
+Worst case (skewed tree) = O(n)
+Balanced tree = O(log n)
+*/
