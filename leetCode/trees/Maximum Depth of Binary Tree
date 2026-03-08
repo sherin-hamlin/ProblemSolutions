@@ -1,0 +1,47 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     struct TreeNode *left;
+ *     struct TreeNode *right;
+ * };
+ */
+
+int maxDepth(struct TreeNode* root) {
+
+    /*
+    APPROACH:
+    Use recursion to compute the depth of the binary tree.
+
+    1. If the node is NULL -> depth = 0.
+    2. Recursively find the depth of the left subtree.
+    3. Recursively find the depth of the right subtree.
+    4. The depth of the current node =
+       1 + maximum(leftDepth, rightDepth).
+    */
+
+    // Base case
+    if(root == NULL)
+        return 0;
+
+    // Find depth of left subtree
+    int leftDepth = maxDepth(root->left);
+
+    // Find depth of right subtree
+    int rightDepth = maxDepth(root->right);
+
+    // Return maximum depth
+    return 1 + (leftDepth > rightDepth ? leftDepth : rightDepth);
+}
+
+/*
+TIME COMPLEXITY:
+O(n)
+Each node in the tree is visited exactly once.
+
+SPACE COMPLEXITY:
+O(h)
+Recursion stack space where h is the height of the tree.
+Worst case (skewed tree) = O(n)
+Balanced tree = O(log n)
+*/
