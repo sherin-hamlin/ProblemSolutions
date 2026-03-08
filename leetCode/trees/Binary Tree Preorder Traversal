@@ -1,0 +1,63 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     struct TreeNode *left;
+ *     struct TreeNode *right;
+ * };
+ */
+
+void preorder(struct TreeNode* root, int* result, int* index)
+{
+    // Base case
+    if(root == NULL)
+        return;
+
+    /*
+    Step 1: Visit root
+    */
+    result[*index] = root->val;
+    (*index)++;
+
+    /*
+    Step 2: Traverse left subtree
+    */
+    preorder(root->left, result, index);
+
+    /*
+    Step 3: Traverse right subtree
+    */
+    preorder(root->right, result, index);
+}
+
+int* preorderTraversal(struct TreeNode* root, int* returnSize) {
+
+    /*
+    APPROACH:
+    Preorder traversal follows:
+    ROOT → LEFT → RIGHT
+
+    1. Visit the node first.
+    2. Recursively traverse the left subtree.
+    3. Recursively traverse the right subtree.
+    */
+
+    int* result = (int*)malloc(100 * sizeof(int));
+    *returnSize = 0;
+
+    preorder(root, result, returnSize);
+
+    return result;
+}
+
+/*
+TIME COMPLEXITY:
+O(n)
+Each node is visited exactly once.
+
+SPACE COMPLEXITY:
+O(h)
+Recursion stack where h is height of tree.
+Worst case = O(n)
+Balanced tree = O(log n)
+*/
