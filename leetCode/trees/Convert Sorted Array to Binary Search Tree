@@ -1,0 +1,68 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     struct TreeNode *left;
+ *     struct TreeNode *right;
+ * };
+ */
+
+struct TreeNode* buildBST(int* nums, int left, int right)
+{
+    /*
+    Base Case:
+    If left index exceeds right index,
+    there are no elements to form a node.
+    */
+    if(left > right)
+        return NULL;
+
+    /*
+    Choose middle element as root
+    to maintain height balance
+    */
+    int mid = (left + right) / 2;
+
+    // Create root node
+    struct TreeNode* root = (struct TreeNode*)malloc(sizeof(struct TreeNode));
+    root->val = nums[mid];
+
+    /*
+    Recursively build left subtree
+    using left half of array
+    */
+    root->left = buildBST(nums, left, mid - 1);
+
+    /*
+    Recursively build right subtree
+    using right half of array
+    */
+    root->right = buildBST(nums, mid + 1, right);
+
+    return root;
+}
+
+struct TreeNode* sortedArrayToBST(int* nums, int numsSize)
+{
+    /*
+    Call helper function with
+    full array range
+    */
+    return buildBST(nums, 0, numsSize - 1);
+}
+
+/*
+APPROACH:
+1. Pick the middle element of the sorted array as root.
+2. Recursively build left subtree from left half.
+3. Recursively build right subtree from right half.
+4. This guarantees the tree is height-balanced.
+
+TIME COMPLEXITY:
+O(n)
+Each element is used once to create a node.
+
+SPACE COMPLEXITY:
+O(log n) average recursion stack (balanced tree)
+O(n) worst case recursion depth
+*/
