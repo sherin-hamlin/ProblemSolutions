@@ -1,0 +1,54 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     struct TreeNode *left;
+ *     struct TreeNode *right;
+ * };
+ */
+
+/*
+APPROACH:
+A tree is symmetric if the left and right subtrees are mirror images.
+
+To check mirror:
+1. Values of both nodes must be equal.
+2. Left child of first node should match right child of second node.
+3. Right child of first node should match left child of second node.
+
+We use recursion to compare nodes in a mirrored way.
+*/
+
+bool isMirror(struct TreeNode* left, struct TreeNode* right)
+{
+    // If both nodes are NULL → symmetric
+    if(left == NULL && right == NULL)
+        return true;
+
+    // If only one is NULL → not symmetric
+    if(left == NULL || right == NULL)
+        return false;
+
+    // Check values and recursive mirror conditions
+    return (left->val == right->val) &&
+           isMirror(left->left, right->right) &&
+           isMirror(left->right, right->left);
+}
+
+bool isSymmetric(struct TreeNode* root)
+{
+    // Call mirror function for left and right subtree
+    return isMirror(root->left, root->right);
+}
+
+/*
+TIME COMPLEXITY:
+O(n)
+Each node is visited once.
+
+SPACE COMPLEXITY:
+O(h)
+Recursive stack space where h is the height of the tree.
+Worst case (skewed tree) = O(n)
+Balanced tree = O(log n)
+*/
