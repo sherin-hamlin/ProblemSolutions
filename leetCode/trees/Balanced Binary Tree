@@ -1,0 +1,56 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     struct TreeNode *left;
+ *     struct TreeNode *right;
+ * };
+ */
+
+/*
+Function to calculate height of the tree
+*/
+int height(struct TreeNode* root)
+{
+    if(root == NULL)
+        return 0;
+
+    int left = height(root->left);
+    int right = height(root->right);
+
+    return 1 + (left > right ? left : right);
+}
+
+bool isBalanced(struct TreeNode* root)
+{
+    /*
+    APPROACH:
+    1. Find height of left subtree.
+    2. Find height of right subtree.
+    3. Check if height difference <= 1.
+    4. Recursively check left and right subtrees.
+    */
+
+    if(root == NULL)
+        return true;
+
+    int leftHeight = height(root->left);
+    int rightHeight = height(root->right);
+
+    if(abs(leftHeight - rightHeight) > 1)
+        return false;
+
+    return isBalanced(root->left) && isBalanced(root->right);
+}
+
+/*
+TIME COMPLEXITY:
+O(n^2)
+For each node we calculate height which takes O(n).
+
+SPACE COMPLEXITY:
+O(h)
+Recursion stack where h is height of tree.
+Worst case = O(n)
+Balanced tree = O(log n)
+*/
