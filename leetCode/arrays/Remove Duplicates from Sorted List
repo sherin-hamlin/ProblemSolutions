@@ -1,0 +1,49 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     struct ListNode *next;
+ * };
+ */
+
+struct ListNode* deleteDuplicates(struct ListNode* head) {
+
+    /*
+    APPROACH:
+    Since the linked list is sorted, duplicate values will be adjacent.
+    Traverse the list and compare current node with the next node.
+    
+    If both values are equal:
+        remove the next node by skipping it.
+    Otherwise:
+        move to the next node.
+    */
+
+    struct ListNode* curr = head;
+
+    while(curr != NULL && curr->next != NULL)
+    {
+        if(curr->val == curr->next->val)
+        {
+            // duplicate found → remove next node
+            curr->next = curr->next->next;
+        }
+        else
+        {
+            // move to next node
+            curr = curr->next;
+        }
+    }
+
+    return head;
+}
+
+/*
+TIME COMPLEXITY:
+O(n)
+We traverse the linked list only once.
+
+SPACE COMPLEXITY:
+O(1)
+No extra space is used, only pointers.
+*/
