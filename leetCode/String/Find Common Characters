@@ -1,0 +1,42 @@
+// Approach: Track minimum frequency of each character across all words | Time: O(n * m) | Space: O(1)
+
+#include <stdlib.h>
+#include <string.h>
+
+char ** commonChars(char ** words, int wordsSize, int* returnSize){
+
+    int minFreq[26];
+
+    for(int i=0;i<26;i++)
+        minFreq[i] = 100;
+
+    for(int i=0;i<wordsSize;i++)
+    {
+        int freq[26] = {0};
+
+        for(int j=0; words[i][j] != '\0'; j++)
+            freq[words[i][j]-'a']++;
+
+        for(int k=0;k<26;k++)
+            if(freq[k] < minFreq[k])
+                minFreq[k] = freq[k];
+    }
+
+    char **result = malloc(sizeof(char*)*100);
+    int index = 0;
+
+    for(int i=0;i<26;i++)
+    {
+        while(minFreq[i]--)
+        {
+            result[index] = malloc(2);
+            result[index][0] = i + 'a';
+            result[index][1] = '\0';
+            index++;
+        }
+    }
+
+    *returnSize = index;
+
+    return result;
+}
