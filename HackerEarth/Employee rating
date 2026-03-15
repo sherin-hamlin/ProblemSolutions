@@ -1,0 +1,43 @@
+// Approach: Traverse array and count consecutive days where workload[i] > 6, track maximum streak | Time: O(N) | Space: O(1)
+
+#include<stdio.h>
+#include<stdbool.h>
+#include<malloc.h>
+
+int solve (int N, int* workload) {
+
+    int max = 0;
+    int current = 0;
+
+    for(int i = 0; i < N; i++)
+    {
+        if(workload[i] > 6)
+        {
+            current++;
+            if(current > max)
+                max = current;
+        }
+        else
+        {
+            current = 0;
+        }
+    }
+
+    return max;
+}
+
+int main() {
+    int N;
+    scanf("%d", &N);
+
+    int *workload = (int *)malloc(sizeof(int)*(N));
+
+    for(int i = 0; i < N; i++)
+        scanf("%d", &workload[i]);
+
+    int out_ = solve(N, workload);
+
+    printf("%d", out_);
+
+    free(workload);
+}
