@@ -1,0 +1,43 @@
+// Approach: Since we can only move value from left to right, every prefix must have enough sum to form permutation prefix | Time: O(N) | Space: O(1)
+
+#include <stdio.h>
+
+int main()
+{
+    int T;
+    scanf("%d",&T);
+
+    while(T--)
+    {
+        long long N;
+        scanf("%lld",&N);
+
+        long long prefix = 0;
+        int possible = 1;
+
+        for(long long i=1;i<=N;i++)
+        {
+            long long x;
+            scanf("%lld",&x);
+
+            prefix += x;
+
+            long long required = i*(i+1)/2;
+
+            if(prefix < required)
+                possible = 0;
+        }
+
+        long long totalRequired = N*(N+1)/2;
+
+        if(prefix != totalRequired)
+            possible = 0;
+
+        if(possible)
+            printf("YES\n");
+        else
+            printf("NO\n");
+    }
+
+    return 0;
+}
