@@ -1,0 +1,23 @@
+// Approach: Parse year/month/day, adjust February for leap year, sum days of previous months | Time: O(1) | Space: O(1)
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int dayOfYear(char * date){
+
+    int year, month, day;
+
+    sscanf(date, "%d-%d-%d", &year, &month, &day);
+
+    int days[] = {31,28,31,30,31,30,31,31,30,31,30,31};
+
+    if((year%400==0) || (year%4==0 && year%100!=0))
+        days[1] = 29;
+
+    int total = day;
+
+    for(int i=0;i<month-1;i++)
+        total += days[i];
+
+    return total;
+}
