@@ -1,0 +1,54 @@
+// Approach: Normalize local name by removing '.' and ignoring substring after '+' | Time: O(n * m) | Space: O(n)
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+int numUniqueEmails(char ** emails, int emailsSize){
+
+    char processed[emailsSize][101];
+    int count = 0;
+
+    for(int i = 0; i < emailsSize; i++)
+    {
+        char temp[101];
+        int k = 0;
+        int j = 0;
+
+        while(emails[i][j] != '@')
+        {
+            if(emails[i][j] == '+')
+            {
+                while(emails[i][j] != '@')
+                    j++;
+                break;
+            }
+
+            if(emails[i][j] != '.')
+                temp[k++] = emails[i][j];
+
+            j++;
+        }
+
+        while(emails[i][j] != '\0')
+            temp[k++] = emails[i][j++];
+
+        temp[k] = '\0';
+
+        int unique = 1;
+
+        for(int x = 0; x < count; x++)
+        {
+            if(strcmp(processed[x], temp) == 0)
+            {
+                unique = 0;
+                break;
+            }
+        }
+
+        if(unique)
+            strcpy(processed[count++], temp);
+    }
+
+    return count;
+}
