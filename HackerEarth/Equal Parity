@@ -1,0 +1,37 @@
+// Approach: Count total powers of 2 in the array; if >= N we can distribute them to make N even numbers | Time: O(N log A) | Space: O(1)
+
+#include <stdio.h>
+
+int main() {
+
+    int T;
+    scanf("%d",&T);
+
+    while(T--)
+    {
+        int N;
+        scanf("%d",&N);
+
+        int size = 2*N;
+        long long total_twos = 0;
+
+        for(int i=0;i<size;i++)
+        {
+            long long x;
+            scanf("%lld",&x);
+
+            while(x % 2 == 0)
+            {
+                total_twos++;
+                x /= 2;
+            }
+        }
+
+        if(total_twos >= N)
+            printf("YES\n");
+        else
+            printf("NO\n");
+    }
+
+    return 0;
+}
