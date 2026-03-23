@@ -1,0 +1,23 @@
+// Approachm: DP using Catalan numbers, dp[n] = sum(dp[i-1] * dp[n-i]) for all roots i
+// Time Complexity: O(n^2)
+// Space Complexity: O(n)
+
+#include <stdlib.h>
+
+int numTrees(int n) {
+    int* dp = (int*)malloc((n + 1) * sizeof(int));
+
+    dp[0] = 1;
+    dp[1] = 1;
+
+    for (int nodes = 2; nodes <= n; nodes++) {
+        dp[nodes] = 0;
+        for (int root = 1; root <= nodes; root++) {
+            dp[nodes] += dp[root - 1] * dp[nodes - root];
+        }
+    }
+
+    int result = dp[n];
+    free(dp);
+    return result;
+}
