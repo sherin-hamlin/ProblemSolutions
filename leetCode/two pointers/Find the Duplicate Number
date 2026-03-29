@@ -1,0 +1,25 @@
+/*
+Approach: Floyd Cycle Detection
+Time Complexity: O(n)
+Space Complexity: O(1)
+*/
+
+int findDuplicate(int* nums, int numsSize) {
+    int slow = nums[0];
+    int fast = nums[0];
+
+    // detect cycle
+    do {
+        slow = nums[slow];
+        fast = nums[nums[fast]];
+    } while(slow != fast);
+
+    // find entrance (duplicate)
+    slow = nums[0];
+    while(slow != fast) {
+        slow = nums[slow];
+        fast = nums[fast];
+    }
+
+    return slow;
+}
