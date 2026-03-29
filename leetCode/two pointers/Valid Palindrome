@@ -1,0 +1,30 @@
+#include <ctype.h>
+#include <stdbool.h>
+
+/*
+Approach: Two Pointer Skip
+Time Complexity: O(n)
+Space Complexity: O(1)
+*/
+
+bool isPalindrome(char* s) {
+    int left = 0, right = 0;
+
+    // find length
+    while(s[right] != '\0') right++;
+    right--;
+
+    while(left < right) {
+        // skip non-alphanumeric
+        while(left < right && !isalnum(s[left])) left++;
+        while(left < right && !isalnum(s[right])) right--;
+
+        if(tolower(s[left]) != tolower(s[right]))
+            return false;
+
+        left++;
+        right--;
+    }
+
+    return true;
+}
