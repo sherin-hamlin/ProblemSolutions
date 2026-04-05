@@ -1,0 +1,107 @@
+// Approach: Sliding Window + Hash Map (Optimized)
+// Time Complexity: O(n)
+// Space Complexity: O(k)
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX 5000
+
+// Simple hashmap using arrays (since constraints manageable)
+typedef struct {
+    char word[50];
+    int count;
+} Map;
+
+int findIndex(Map *map, int size, char *word) {
+    for (int i = 0; i < size; i++) {
+        if (strcmp(map[i].word, word) == 0)
+            return i;
+    }
+    return -1;
+}
+
+int* findSubstring(char *s, char **words, int wordsSize, int *returnSize) {
+    int sLen = strlen(s);
+    int wordLen = strlen(words[0]);
+    int totalLen = wordLen * wordsSize;
+
+    Map map[MAX];
+    int mapSize = 0;
+
+    // Build frequency map
+    for (int i = 0; i < wordsSize; i++) {
+        int idx = findIndex(map, mapSize, words[i]);
+        if (idx == -1) {
+            strcpy(map[mapSize].word, words[i]);
+            map[mapSize].count = 1;
+            mapSize++;
+        } else {
+            map[idx].count++;
+        }
+    }
+
+    int *result = (int *)malloc(sizeof(int) * sLen);
+    *returnSize = 0;
+
+    for (int i = 0; i < wordLen; i++) {
+        int left = i, count = 0;
+
+        Map temp[MAX];
+        int tempSize = mapSize;
+
+        for (int t = 0; t < mapSize; t++) {
+            strcpy(temp[t].word, map[t].word);
+            temp[t].count = 0;
+        }
+
+        for (int j = i; j + wordLen <= sLen; j += wordLen) {
+            char word[50];
+            strncpy(word, s + j, wordLen);
+            word[wordLen] = '\0';
+
+            int idx = findIndex(map, mapSize, word);
+
+            if (idx != -1) {
+                int tempIdx = findIndex(temp, tempSize, word);
+                temp[tempIdx].count++;
+                count++;
+
+                while (temp[tempIdx].count > map[idx].count) {
+                    char leftWord[50];
+                    strncpy(leftWord, s + left, wordLen);
+                    leftWord[wordLen] = '\0';
+
+                    int leftIdx = findIndex(temp, tempSize, leftWord);
+                    temp[leftIdx].count--;
+                    count--;
+                    left += wordLen;
+                }
+
+                if (count == wordsSize) {
+                    result[*returnSize] = left;
+                    (*returnSize)++;
+
+                    char leftWord[50];
+                    strncpy(leftWord, s + left, wordLen);
+                    leftWord[wordLen] = '\0';
+
+                    int leftIdx = findIndex(temp, tempSize, leftWord);
+                    temp[leftIdx].count--;
+                    count--;
+                    left += wordLen;
+                }
+            } else {
+                // reset window
+                for (int t = 0; t < tempSize; t++)
+                    temp[t].count = 0;
+
+                count = 0;
+                left = j + wordLen;
+            }
+        }
+    }
+
+    return result;
+}
