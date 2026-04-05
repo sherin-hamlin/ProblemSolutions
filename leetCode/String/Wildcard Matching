@@ -1,0 +1,39 @@
+// Approach: Greedy + Two Pointers with backtracking
+// Time Complexity: O(n)
+// Space Complexity: O(1)
+
+#include <stdio.h>
+
+int isMatch(char *s, char *p) {
+    int i = 0, j = 0;
+    int star = -1, match = 0;
+
+    while (s[i]) {
+        // Case 1: match or '?'
+        if (p[j] == '?' || p[j] == s[i]) {
+            i++;
+            j++;
+        }
+        // Case 2: '*'
+        else if (p[j] == '*') {
+            star = j;
+            match = i;
+            j++;
+        }
+        // Case 3: mismatch but previous '*'
+        else if (star != -1) {
+            j = star + 1;
+            match++;
+            i = match;
+        }
+        // Case 4: mismatch and no '*'
+        else {
+            return 0;
+        }
+    }
+
+    // Check remaining pattern
+    while (p[j] == '*') j++;
+
+    return p[j] == '\0';
+}
