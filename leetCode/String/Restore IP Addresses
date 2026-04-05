@@ -1,0 +1,63 @@
+// Approach: Backtracking – try all partitions of string into 4 valid parts
+// Time Complexity: O(1)
+// Space Complexity: O(1)
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int isValid(char *s, int start, int len) {
+    if (len > 1 && s[start] == '0') return 0;
+
+    int num = 0;
+    for (int i = 0; i < len; i++) {
+        num = num * 10 + (s[start + i] - '0');
+    }
+
+    return num <= 255;
+}
+
+void backtrack(char *s, int len, int start, int part,
+               char *path, int pathLen,
+               char **result, int *returnSize) {
+
+    if (part == 4 && start == len) {
+        path[pathLen - 1] = '\0'; // remove last '.'
+        result[*returnSize] = (char *)malloc(strlen(path) + 1);
+        strcpy(result[*returnSize], path);
+        (*returnSize)++;
+        return;
+    }
+
+    if (part == 4 || start == len) return;
+
+    for (int l = 1; l <= 3; l++) {
+        if (start + l > len) break;
+
+        if (isValid(s, start, l)) {
+            int oldLen = pathLen;
+
+            strncpy(path + pathLen, s + start, l);
+            pathLen += l;
+
+            path[pathLen++] = '.';
+
+            backtrack(s, len, start + l, part + 1,
+                      path, pathLen, result, returnSize);
+
+            pathLen = oldLen; // backtrack
+        }
+    }
+}
+
+char** restoreIpAddresses(char* s, int* returnSize) {
+    int len = strlen(s);
+    char **result = (char **)malloc(sizeof(char *) * 1000);
+    *returnSize = 0;
+
+    char path[20];
+
+    backtrack(s, len, 0, 0, path, 0, result, returnSize);
+
+    return result;
+}
