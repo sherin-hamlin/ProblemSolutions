@@ -1,0 +1,42 @@
+// Approach: Simulation – build sequence by counting consecutive digits
+// Time Complexity: O(n * m)
+// Space Complexity: O(m)
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char* countAndSay(int n) {
+    char *result = (char *)malloc(5000);
+    strcpy(result, "1");
+
+    for (int i = 2; i <= n; i++) {
+        char temp[5000] = "";
+        int len = strlen(result);
+
+        int count = 1;
+        char current = result[0];
+
+        for (int j = 1; j < len; j++) {
+            if (result[j] == current) {
+                count++;
+            } else {
+                char buffer[20];
+                sprintf(buffer, "%d%c", count, current);
+                strcat(temp, buffer);
+
+                current = result[j];
+                count = 1;
+            }
+        }
+
+        // last group
+        char buffer[20];
+        sprintf(buffer, "%d%c", count, current);
+        strcat(temp, buffer);
+
+        strcpy(result, temp);
+    }
+
+    return result;
+}
