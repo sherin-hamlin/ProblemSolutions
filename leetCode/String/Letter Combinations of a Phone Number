@@ -1,0 +1,49 @@
+// Approach: Backtracking – generate all combinations recursively
+// Time Complexity: O(4^n)
+// Space Complexity: O(n)
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char *map[] = {
+    "",     "",     "abc",  "def",
+    "ghi",  "jkl",  "mno",
+    "pqrs", "tuv",  "wxyz"
+};
+
+void backtrack(char *digits, int index, char *current, char **result, int *returnSize) {
+    if (digits[index] == '\0') {
+        result[*returnSize] = (char *)malloc(strlen(current) + 1);
+        strcpy(result[*returnSize], current);
+        (*returnSize)++;
+        return;
+    }
+
+    int digit = digits[index] - '0';
+    char *letters = map[digit];
+
+    for (int i = 0; letters[i] != '\0'; i++) {
+        int len = strlen(current);
+        current[len] = letters[i];
+        current[len + 1] = '\0';
+
+        backtrack(digits, index + 1, current, result, returnSize);
+
+        current[len] = '\0'; // backtrack
+    }
+}
+
+char **letterCombinations(char *digits, int *returnSize) {
+    *returnSize = 0;
+
+    if (digits[0] == '\0') return NULL;
+
+    int maxCombinations = 1000; // enough for constraints
+    char **result = (char **)malloc(maxCombinations * sizeof(char *));
+    char current[20] = "";
+
+    backtrack(digits, 0, current, result, returnSize);
+
+    return result;
+}
