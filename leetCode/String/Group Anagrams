@@ -1,0 +1,68 @@
+// Approach: Hashing + Sorting – use sorted string as key
+// Time Complexity: O(n * k log k)
+// Space Complexity: O(n * k)
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int cmp(const void *a, const void *b) {
+    return (*(char *)a - *(char *)b);
+}
+
+char*** groupAnagrams(char **strs, int strsSize, int* returnSize, int** returnColumnSizes) {
+
+    char **keys = (char **)malloc(sizeof(char *) * strsSize);
+    char ***groups = (char ***)malloc(sizeof(char **) * strsSize);
+    int *groupSize = (int *)calloc(strsSize, sizeof(int));
+
+    int totalGroups = 0;
+
+    for (int i = 0; i < strsSize; i++) {
+
+        // ✅ dynamic temp (FIXED)
+        char *temp = (char *)malloc(strlen(strs[i]) + 1);
+        strcpy(temp, strs[i]);
+
+        qsort(temp, strlen(temp), sizeof(char), cmp);
+
+        int found = -1;
+
+        for (int j = 0; j < totalGroups; j++) {
+            if (strcmp(keys[j], temp) == 0) {
+                found = j;
+                break;
+            }
+        }
+
+        if (found == -1) {
+            keys[totalGroups] = temp; // reuse temp
+
+            groups[totalGroups] = (char **)malloc(sizeof(char *) * strsSize);
+
+            groups[totalGroups][0] = (char *)malloc(strlen(strs[i]) + 1);
+            strcpy(groups[totalGroups][0], strs[i]);
+
+            groupSize[totalGroups] = 1;
+            totalGroups++;
+        } else {
+            free(temp); // not needed
+
+            groups[found][groupSize[found]] = (char *)malloc(strlen(strs[i]) + 1);
+            strcpy(groups[found][groupSize[found]], strs[i]);
+            groupSize[found]++;
+        }
+    }
+
+    *returnSize = totalGroups;
+    *returnColumnSizes = (int *)malloc(sizeof(int) * totalGroups);
+
+    char ***result = (char ***)malloc(sizeof(char **) * totalGroups);
+
+    for (int i = 0; i < totalGroups; i++) {
+        result[i] = groups[i];
+        (*returnColumnSizes)[i] = groupSize[i];
+    }
+
+    return result;
+}
