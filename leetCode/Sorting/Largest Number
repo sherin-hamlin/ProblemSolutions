@@ -1,0 +1,51 @@
+// Approach: Sort numbers as strings using custom comparator (a+b > b+a)
+// Time Complexity: O(n log n)
+// Space Complexity: O(n)
+
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+
+// Comparator
+int compare(const void* a, const void* b) {
+    char ab[25], ba[25];
+    sprintf(ab, "%s%s", *(char**)a, *(char**)b);
+    sprintf(ba, "%s%s", *(char**)b, *(char**)a);
+    return strcmp(ba, ab); // descending order
+}
+
+char* largestNumber(int* nums, int numsSize) {
+    char** strs = (char**)malloc(numsSize * sizeof(char*));
+
+    // Convert integers to strings
+    for (int i = 0; i < numsSize; i++) {
+        strs[i] = (char*)malloc(12 * sizeof(char));
+        sprintf(strs[i], "%d", nums[i]);
+    }
+
+    // Sort using custom comparator
+    qsort(strs, numsSize, sizeof(char*), compare);
+
+    // Edge case: if largest is "0"
+    if (strcmp(strs[0], "0") == 0) {
+        char* res = (char*)malloc(2);
+        strcpy(res, "0");
+        return res;
+    }
+
+    // Calculate total length
+    int totalLen = 0;
+    for (int i = 0; i < numsSize; i++) {
+        totalLen += strlen(strs[i]);
+    }
+
+    char* result = (char*)malloc((totalLen + 1) * sizeof(char));
+    result[0] = '\0';
+
+    // Concatenate
+    for (int i = 0; i < numsSize; i++) {
+        strcat(result, strs[i]);
+    }
+
+    return result;
+}
