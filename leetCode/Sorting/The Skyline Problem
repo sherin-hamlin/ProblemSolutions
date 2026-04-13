@@ -1,0 +1,120 @@
+// Approach: Sweep line with sorting + max heap to track active building heights
+// Time Complexity: O(n log n)
+// Space Complexity: O(n)
+
+#include <stdlib.h>
+
+// Event structure
+typedef struct {
+    int x;
+    int h;
+} Event;
+
+// Comparator for events
+int compare(const void* a, const void* b) {
+    Event* e1 = (Event*)a;
+    Event* e2 = (Event*)b;
+
+    if (e1->x != e2->x)
+        return e1->x - e2->x;
+
+    return e1->h - e2->h;
+}
+
+// Max Heap helpers
+void swap(int* a, int* b) {
+    int t = *a; *a = *b; *b = t;
+}
+
+void heapifyUp(int* heap, int idx) {
+    while (idx > 0) {
+        int parent = (idx - 1) / 2;
+        if (heap[parent] >= heap[idx]) break;
+        swap(&heap[parent], &heap[idx]);
+        idx = parent;
+    }
+}
+
+void heapifyDown(int* heap, int size, int idx) {
+    while (1) {
+        int largest = idx;
+        int l = 2*idx + 1, r = 2*idx + 2;
+
+        if (l < size && heap[l] > heap[largest]) largest = l;
+        if (r < size && heap[r] > heap[largest]) largest = r;
+
+        if (largest == idx) break;
+
+        swap(&heap[idx], &heap[largest]);
+        idx = largest;
+    }
+}
+
+// Remove arbitrary value (lazy removal alternative)
+int removeVal(int* heap, int* size, int val) {
+    for (int i = 0; i < *size; i++) {
+        if (heap[i] == val) {
+            heap[i] = heap[--(*size)];
+            heapifyDown(heap, *size, i);
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int** getSkyline(int** buildings, int buildingsSize, int* buildingsColSize,
+                 int* returnSize, int** returnColumnSizes) {
+
+    int n = buildingsSize;
+    Event* events = (Event*)malloc(2 * n * sizeof(Event));
+
+    // Create events
+    for (int i = 0; i < n; i++) {
+        events[2*i] = (Event){buildings[i][0], -buildings[i][2]}; // start
+        events[2*i + 1] = (Event){buildings[i][1], buildings[i][2]}; // end
+    }
+
+    qsort(events, 2*n, sizeof(Event), compare);
+
+    int* heap = (int*)malloc(2*n * sizeof(int));
+    int heapSize = 0;
+
+    heap[heapSize++] = 0; // ground
+
+    int prevMax = 0;
+
+    int** result = (int**)malloc(2*n * sizeof(int*));
+    *returnColumnSizes = (int*)malloc(2*n * sizeof(int));
+    *returnSize = 0;
+
+    for (int i = 0; i < 2*n; i++) {
+        int x = events[i].x;
+        int h = events[i].h;
+
+        if (h < 0) {
+            // Add height
+            heap[heapSize] = -h;
+            heapifyUp(heap, heapSize++);
+        } else {
+            // Remove height
+            removeVal(heap, &heapSize, h);
+        }
+
+        int currMax = heap[0];
+
+        if (currMax != prevMax) {
+            result[*returnSize] = (int*)malloc(2 * sizeof(int));
+            result[*returnSize][0] = x;
+            result[*returnSize][1] = currMax;
+            (*returnColumnSizes)[*returnSize] = 2;
+            (*returnSize)++;
+
+            prevMax = currMax;
+        }
+    }
+
+    free(events);
+    free(heap);
+
+    return result;
+}
