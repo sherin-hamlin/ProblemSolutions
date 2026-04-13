@@ -1,0 +1,53 @@
+// Approach: Use Min Heap of size k to track k largest elements
+// Time Complexity: O(n log k)
+// Space Complexity: O(k)
+
+#include <stdlib.h>
+
+// Swap
+void swap(int* a, int* b) {
+    int t = *a;
+    *a = *b;
+    *b = t;
+}
+
+// Heapify down
+void heapify(int* heap, int size, int i) {
+    int smallest = i;
+    int left = 2*i + 1;
+    int right = 2*i + 2;
+
+    if (left < size && heap[left] < heap[smallest])
+        smallest = left;
+
+    if (right < size && heap[right] < heap[smallest])
+        smallest = right;
+
+    if (smallest != i) {
+        swap(&heap[i], &heap[smallest]);
+        heapify(heap, size, smallest);
+    }
+}
+
+int findKthLargest(int* nums, int numsSize, int k) {
+    int* heap = (int*)malloc(k * sizeof(int));
+
+    // Build initial heap
+    for (int i = 0; i < k; i++)
+        heap[i] = nums[i];
+
+    for (int i = k/2 - 1; i >= 0; i--)
+        heapify(heap, k, i);
+
+    // Process remaining elements
+    for (int i = k; i < numsSize; i++) {
+        if (nums[i] > heap[0]) {
+            heap[0] = nums[i];
+            heapify(heap, k, 0);
+        }
+    }
+
+    int result = heap[0];
+    free(heap);
+    return result;
+}
