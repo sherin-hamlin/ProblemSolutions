@@ -1,0 +1,98 @@
+// Approach: Use bucket sort (sliding window) to check nearby almost duplicates
+// Time Complexity: O(n)
+// Space Complexity: O(n)
+
+#include <stdlib.h>
+#include <stdbool.h>
+
+#define HASH_SIZE 100003
+
+typedef struct Node {
+    long key;
+    long value;
+    struct Node* next;
+} Node;
+
+Node* hash[HASH_SIZE];
+
+// Hash function
+int hashFunc(long key) {
+    return (key % HASH_SIZE + HASH_SIZE) % HASH_SIZE;
+}
+
+// Insert into hashmap
+void insert(long key, long value) {
+    int idx = hashFunc(key);
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->key = key;
+    newNode->value = value;
+    newNode->next = hash[idx];
+    hash[idx] = newNode;
+}
+
+// Find in hashmap
+Node* find(long key) {
+    int idx = hashFunc(key);
+    Node* curr = hash[idx];
+    while (curr) {
+        if (curr->key == key) return curr;
+        curr = curr->next;
+    }
+    return NULL;
+}
+
+// Delete from hashmap
+void removeKey(long key) {
+    int idx = hashFunc(key);
+    Node* curr = hash[idx];
+    Node* prev = NULL;
+
+    while (curr) {
+        if (curr->key == key) {
+            if (prev) prev->next = curr->next;
+            else hash[idx] = curr->next;
+            free(curr);
+            return;
+        }
+        prev = curr;
+        curr = curr->next;
+    }
+}
+
+// Get bucket ID
+long getBucketId(long num, long w) {
+    return num >= 0 ? num / w : ((num + 1) / w) - 1;
+}
+
+bool containsNearbyAlmostDuplicate(int* nums, int numsSize, int indexDiff, int valueDiff) {
+    if (valueDiff < 0) return false;
+
+    long w = (long)valueDiff + 1;
+
+    for (int i = 0; i < HASH_SIZE; i++) hash[i] = NULL;
+
+    for (int i = 0; i < numsSize; i++) {
+        long num = nums[i];
+        long id = getBucketId(num, w);
+
+        // Same bucket
+        if (find(id)) return true;
+
+        // Neighbor buckets
+        Node* left = find(id - 1);
+        if (left && labs(num - left->value) <= valueDiff) return true;
+
+        Node* right = find(id + 1);
+        if (right && labs(num - right->value) <= valueDiff) return true;
+
+        insert(id, num);
+
+        // Maintain window size
+        if (i >= indexDiff) {
+            long oldId = getBucketId(nums[i - indexDiff], w);
+            removeKey(oldId);
+        }
+    }
+
+    return false;
+}
