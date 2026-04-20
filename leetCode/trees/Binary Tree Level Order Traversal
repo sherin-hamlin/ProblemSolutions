@@ -1,0 +1,49 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     struct TreeNode *left;
+ *     struct TreeNode *right;
+ * };
+ */
+
+/**
+ * Return an array of arrays of size *returnSize.
+ * The sizes of the arrays are returned as *returnColumnSizes array.
+ * Note: Both returned array and *columnSizes array must be malloced, assume caller calls free().
+ */
+
+// Queue based level traversal
+// Time Complexity: O(n), Space Complexity: O(n)
+
+int** levelOrder(struct TreeNode* root, int* returnSize, int** returnColumnSizes) {
+    *returnSize = 0;
+    if (root == NULL) return NULL;
+
+    // Allocate memory for the result and column sizes
+    int** result = (int**)malloc(2000 * sizeof(int*));
+    *returnColumnSizes = (int*)malloc(2000 * sizeof(int));
+    
+    // Simple queue implementation using an array
+    struct TreeNode* queue[2000];
+    int front = 0, rear = 0;
+    
+    queue[rear++] = root;
+    
+    while (front < rear) {
+        int levelSize = rear - front; // Number of nodes at current level
+        (*returnColumnSizes)[*returnSize] = levelSize;
+        result[*returnSize] = (int*)malloc(levelSize * sizeof(int));
+        
+        for (int i = 0; i < levelSize; i++) {
+            struct TreeNode* node = queue[front++];
+            result[*returnSize][i] = node->val;
+            
+            if (node->left) queue[rear++] = node->left;
+            if (node->right) queue[rear++] = node->right;
+        }
+        (*returnSize)++;
+    }
+    
+    return result;
+}
