@@ -1,0 +1,90 @@
+// Approach: use controlled in-order traversal with a stack to yield next smallest on demand.
+// Keep stack of nodes from current node down to its leftmost descendant; pushing right child when advancing.
+// next() pops top (current smallest), then pushes all left descendants of its right subtree.
+// hasNext() checks whether stack is non-empty.
+
+#include <stdbool.h>
+#include <stdlib.h>
+
+// If your build already provides struct TreeNode, do NOT redefine it.
+// Uncomment and use the following only if TreeNode isn't defined elsewhere:
+// struct TreeNode {
+//     int val;
+//     struct TreeNode *left;
+//     struct TreeNode *right;
+// };
+
+typedef struct {
+    struct TreeNode **data;
+    int top;
+    int cap;
+} Stack;
+
+static Stack* stack_create(int cap) {
+    Stack *s = (Stack*)malloc(sizeof(Stack));
+    s->data = (struct TreeNode**)malloc(sizeof(struct TreeNode*) * cap);
+    s->top = 0;
+    s->cap = cap;
+    return s;
+}
+static void stack_free(Stack *s) {
+    free(s->data);
+    free(s);
+}
+static void stack_push(Stack *s, struct TreeNode *node) {
+    if (s->top == s->cap) {
+        s->cap = s->cap ? s->cap * 2 : 4;
+        s->data = (struct TreeNode**)realloc(s->data, sizeof(struct TreeNode*) * s->cap);
+    }
+    s->data[s->top++] = node;
+}
+static struct TreeNode* stack_pop(Stack *s) {
+    if (s->top == 0) return NULL;
+    return s->data[--s->top];
+}
+static bool stack_empty(Stack *s) { return s->top == 0; }
+
+typedef struct {
+    Stack *st;
+} BSTIterator;
+
+BSTIterator* bSTIteratorCreate(struct TreeNode* root) {
+    BSTIterator *it = (BSTIterator*)malloc(sizeof(BSTIterator));
+    it->st = stack_create(64);
+    struct TreeNode *cur = root;
+    while (cur) {
+        stack_push(it->st, cur);
+        cur = cur->left;
+    }
+    return it;
+}
+
+int bSTIteratorNext(BSTIterator* obj) {
+    struct TreeNode *node = stack_pop(obj->st);
+    int val = node->val;
+    node = node->right;
+    while (node) {
+        stack_push(obj->st, node);
+        node = node->left;
+    }
+    return val;
+}
+
+bool bSTIteratorHasNext(BSTIterator* obj) {
+    return !stack_empty(obj->st);
+}
+
+void bSTIteratorFree(BSTIterator* obj) {
+    if (!obj) return;
+    stack_free(obj->st);
+    free(obj);
+}
+
+/*
+Time complexity:
+ - next(): amortized O(1).
+ - hasNext(): O(1).
+
+Space complexity:
+ - O(h) extra space, where h is tree height (stack).
+*/
