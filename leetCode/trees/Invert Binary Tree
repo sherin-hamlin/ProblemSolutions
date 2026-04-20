@@ -1,0 +1,22 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     struct TreeNode *left;
+ *     struct TreeNode *right;
+ * };
+ */
+
+// Recursive child node swapping
+// Time Complexity: O(n), Space Complexity: O(h)
+
+struct TreeNode* invertTree(struct TreeNode* root) {
+    if (root == NULL) return NULL;
+
+    // Swap the left and right pointers
+    struct TreeNode* temp = root->left;
+    root->left = invertTree(root->right);
+    root->right = invertTree(temp);
+
+    return root;
+}
