@@ -1,0 +1,42 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     struct TreeNode *left;
+ *     struct TreeNode *right;
+ * };
+ */
+
+struct Result {
+    int rob;
+    int skip;
+};
+
+// Recursive DFS result pair
+// Time Complexity: O(n), Space Complexity: O(h)
+
+struct Result dfs(struct TreeNode* root) {
+    if (root == NULL) {
+        struct Result res = {0, 0};
+        return res;
+    }
+
+    struct Result left = dfs(root->left);
+    struct Result right = dfs(root->right);
+
+    struct Result current;
+    // If we rob this house, we cannot rob its children
+    current.rob = root->val + left.skip + right.skip;
+
+    // If we skip this house, we take the max possible from each child
+    int leftMax = left.rob > left.skip ? left.rob : left.skip;
+    int rightMax = right.rob > right.skip ? right.rob : right.skip;
+    current.skip = leftMax + rightMax;
+
+    return current;
+}
+
+int rob(struct TreeNode* root) {
+    struct Result result = dfs(root);
+    return result.rob > result.skip ? result.rob : result.skip;
+}
