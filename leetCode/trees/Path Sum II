@@ -1,0 +1,49 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     struct TreeNode *left;
+ *     struct TreeNode *right;
+ * };
+ */
+
+/**
+ * Return an array of arrays of size *returnSize.
+ * The sizes of the arrays are returned as *returnColumnSizes array.
+ * Note: Both returned array and *columnSizes array must be malloced, assume caller calls free().
+ */
+
+// Recursive DFS backtracking search
+// Time Complexity: O(n^2), Space Complexity: O(n)
+
+void findPaths(struct TreeNode* root, int targetSum, int* currentPath, int pathLen, int*** result, int* returnSize, int** returnColumnSizes) {
+    if (root == NULL) return;
+
+    // Add current node to path
+    currentPath[pathLen++] = root->val;
+    targetSum -= root->val;
+
+    // Check if it's a leaf node and sum matches
+    if (root->left == NULL && root->right == NULL && targetSum == 0) {
+        (*result)[*returnSize] = (int*)malloc(pathLen * sizeof(int));
+        memcpy((*result)[*returnSize], currentPath, pathLen * sizeof(int));
+        (*returnColumnSizes)[*returnSize] = pathLen;
+        (*returnSize)++;
+    } else {
+        // Continue searching left and right subtrees
+        findPaths(root->left, targetSum, currentPath, pathLen, result, returnSize, returnColumnSizes);
+        findPaths(root->right, targetSum, currentPath, pathLen, result, returnSize, returnColumnSizes);
+    }
+}
+
+int** pathSum(struct TreeNode* root, int targetSum, int* returnSize, int** returnColumnSizes) {
+    int** result = (int**)malloc(2000 * sizeof(int*));
+    *returnColumnSizes = (int*)malloc(2000 * sizeof(int));
+    int* currentPath = (int*)malloc(2000 * sizeof(int));
+    *returnSize = 0;
+
+    findPaths(root, targetSum, currentPath, 0, &result, returnSize, returnColumnSizes);
+
+    free(currentPath);
+    return result;
+}
