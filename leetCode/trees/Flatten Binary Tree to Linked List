@@ -1,0 +1,21 @@
+// Iterative Morris style flattening
+// Time Complexity: O(n), Space Complexity: O(1)
+
+void flatten(struct TreeNode* root) {
+    struct TreeNode* curr = root;
+    while (curr != NULL) {
+        if (curr->left != NULL) {
+            // Find the rightmost node of the left subtree
+            struct TreeNode* pre = curr->left;
+            while (pre->right != NULL) {
+                pre = pre->right;
+            }
+            // Rewire the right subtree to the rightmost of left
+            pre->right = curr->right;
+            curr->right = curr->left;
+            curr->left = NULL;
+        }
+        // Move to the next node on the right
+        curr = curr->right;
+    }
+}
