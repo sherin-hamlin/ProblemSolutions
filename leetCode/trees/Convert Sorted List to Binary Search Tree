@@ -1,0 +1,48 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     struct ListNode *next;
+ * };
+ */
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     struct TreeNode *left;
+ *     struct TreeNode *right;
+ * };
+ */
+
+// Recursive middle node split
+// Time Complexity: O(n log n), Space Complexity: O(log n)
+
+struct TreeNode* sortedListToBST(struct ListNode* head) {
+    if (head == NULL) return NULL;
+    if (head->next == NULL) {
+        struct TreeNode* node = (struct TreeNode*)malloc(sizeof(struct TreeNode));
+        node->val = head->val;
+        node->left = node->right = NULL;
+        return node;
+    }
+
+    // Use fast and slow pointers to find the middle of the list
+    struct ListNode *slow = head, *fast = head, *prev = NULL;
+    while (fast != NULL && fast->next != NULL) {
+        prev = slow;
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+
+    // 'slow' is now the middle node, 'prev' is the node before it
+    struct TreeNode* root = (struct TreeNode*)malloc(sizeof(struct TreeNode));
+    root->val = slow->val;
+
+    // Disconnect the left half of the list to recurse
+    if (prev != NULL) prev->next = NULL;
+
+    root->left = sortedListToBST(head);
+    root->right = sortedListToBST(slow->next);
+
+    return root;
+}
