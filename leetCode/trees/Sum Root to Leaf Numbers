@@ -1,0 +1,30 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     struct TreeNode *left;
+ *     struct TreeNode *right;
+ * };
+ */
+
+// Recursive depth first summation
+// Time Complexity: O(n), Space Complexity: O(h)
+
+int calculate(struct TreeNode* root, int currentSum) {
+    if (root == NULL) return 0;
+
+    // Update current number by shifting digits
+    currentSum = currentSum * 10 + root->val;
+
+    // If leaf node, return the accumulated number
+    if (root->left == NULL && root->right == NULL) {
+        return currentSum;
+    }
+
+    // Sum the results from left and right subtrees
+    return calculate(root->left, currentSum) + calculate(root->right, currentSum);
+}
+
+int sumNumbers(struct TreeNode* root) {
+    return calculate(root, 0);
+}
